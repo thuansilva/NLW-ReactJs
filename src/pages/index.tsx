@@ -1,17 +1,18 @@
 import { GetStaticProps } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
+
+import styles from "./home.module.scss";
 import { api } from "../services/api";
 import { convertDurationToTimeString } from "../utils/convertDurationToTimeString";
-import styles from "./home.module.scss";
 
 type Episodes = {
   id: string;
   title: string;
   members: string;
   duration: string;
-  description: string;
   durationAtString: string;
   url: string;
   publishedAt: string;
@@ -40,7 +41,9 @@ export default function Home({ allEpisodes, latestEpisodes }: HomeProps) {
                   objectFit="cover"
                 />
                 <div className={styles.episodeDetails}>
-                  <a href="">{episodes.title}</a>
+                  <Link href={`/episodes/${episodes.id}`}>
+                    <a>{episodes.title}</a>
+                  </Link>
                   <p>{episodes.members}</p>
                   <span>{episodes.publishedAt}</span>
                   <span>{episodes.durationAtString}</span>
@@ -79,7 +82,9 @@ export default function Home({ allEpisodes, latestEpisodes }: HomeProps) {
                     />
                   </td>
                   <td>
-                    <a href="">{episode.title}</a>
+                    <Link href={`/episodes/${episode.id}`}>
+                      <a href="">{episode.title}</a>
+                    </Link>
                   </td>
                   <td>{episode.members}</td>
                   <td style={{ width: 100 }}>{episode.publishedAt}</td>
@@ -117,7 +122,6 @@ export const getStaticProps: GetStaticProps = async () => {
       publishedAt: format(parseISO(episode.published_at), "d MMM yy", {
         locale: ptBR,
       }),
-      duration: Number(episode.file.duration),
       durationAtString: convertDurationToTimeString(
         Number(episode.file.duration)
       ),
